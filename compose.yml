@@ -16,6 +16,21 @@ services:
       interval: 2s
       timeout: 3s
       retries: 10
+  app:
+    build: .
+    container_name: threat-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: postgres 
+      DB_PORT: ${DB_PORT}
+      HTTP_PORT: ${HTTP_PORT}
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   pgdata:
