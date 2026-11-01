@@ -1,24 +1,37 @@
 package config
 
 import (
-	"errors"
+	"fmt"
 	"os"
 )
 
 type Config struct {
-	HTTPPort    string
-	DatabaseURL string
+	DBUser     string
+	DBPassword string
+	DBName     string
+	DBHost     string
+	DBPort     string
+	HTTPPort   string
+}
+
+func (c *Config) DatabaseURL() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		c.DBUser, c.DBPassword, c.DBHost, c.DBPort, c.DBName)
 }
 
 func Load() (*Config, error) {
-	dbUrl := os.Getenv("DATABASE_URL")
-	if dbUrl == "" {
-		return nil, errors.New("invalid connection string to database")
+	pass := getEnv("DB_PASSWORD", "")
+	if pass == "" {
+		return nil, fmt.Errorf("empty password")
 	}
 
 	return &Config{
-		HTTPPort:    getEnv("HTTP_PORT", "8080"),
-		DatabaseURL: dbUrl,
+		DBUser:     getEnv("DB_USER", "user"),
+		DBPassword: pass,
+		DBName:     getEnv("DB_NAME", "name"),
+		DBHost:     getEnv("DB_HOST", "localhost"),
+		DBPort:     getEnv("DB_PORT", "5432"),
+		HTTPPort:   getEnv("HTTP_PORT", "8080"),
 	}, nil
 }
 

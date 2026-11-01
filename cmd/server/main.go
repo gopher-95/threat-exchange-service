@@ -19,7 +19,7 @@ func main() {
 		log.Fatalf("failed to load config: %v", err)
 	}
 
-	pool, err := pgxpool.New(context.Background(), cfg.DatabaseURL)
+	pool, err := pgxpool.New(context.Background(), cfg.DatabaseURL())
 	if err != nil {
 		log.Fatalf("failed connection to db: %v", err)
 	}
