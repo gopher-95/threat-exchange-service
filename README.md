@@ -34,11 +34,11 @@ REST-сервис для обмена информацией об угрозах
 ```bash
 cp .env.example .env
 ```
-2. Запустите сервисы
+2. Запустите сервис
 ```bash
 docker compose up --build
 ```
-3. Сервисы будет доступен по адресу:
+3. Сервис будет доступен по адресу:
 ```text
 http://localhost:8080
 ```
@@ -66,6 +66,18 @@ curl -X PUT localhost:8080/info/d41d8cd98f00b204e9800998ecf8427e \
 ### Получить угрозу (GET)
 ```bash 
 curl -X GET localhost:8080/info/d41d8cd98f00b204e9800998ecf8427e
+```
+### Пример ответа:
+```json
+{
+  "md5": "d41d8cd98f00b204e9800998ecf8427e",
+  "name": "Trojan.Test",
+  "severity": "high",
+  "type": "trojan",
+  "description": "Крадет пароли из браузера",
+  "created_at": "2026-11-01T12:00:00Z",
+  "updated_at": "2026-11-01T12:00:00Z"
+}
 ```
 
 ## Безопасность
