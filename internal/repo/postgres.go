@@ -11,14 +11,17 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// DB реализует интерфейс Storage для работы с PostgreSQL.
 type DB struct {
 	db *pgxpool.Pool
 }
 
+// NewDB создает новый экземпляр DB с указанным пулом соединений.
 func NewDB(pool *pgxpool.Pool) *DB {
 	return &DB{db: pool}
 }
 
+// GetInfo извлекает информацию об угрозе из базы данных по MD5.
 func (d *DB) GetInfo(ctx context.Context, md5 string) (*threat.Threat, error) {
 	t := threat.Threat{}
 	query := "SELECT md5, name, severity, type, description, created_at, updated_at from threats WHERE md5 = $1"
@@ -33,6 +36,7 @@ func (d *DB) GetInfo(ctx context.Context, md5 string) (*threat.Threat, error) {
 	return &t, nil
 }
 
+// CreateInfo сохраняет новую угрозу в базе данных.
 func (d *DB) CreateInfo(ctx context.Context, t threat.Threat) error {
 	query := "INSERT INTO threats (md5, name, severity, type, description) VALUES ($1, $2, $3, $4, $5)"
 
@@ -48,6 +52,7 @@ func (d *DB) CreateInfo(ctx context.Context, t threat.Threat) error {
 	return nil
 }
 
+// UpdateInfo обновляет существующую угрозу в базе данных.
 func (d *DB) UpdateInfo(ctx context.Context, t threat.Threat) error {
 	query := "UPDATE threats SET name = $1, severity = $2, type = $3, description = $4, updated_at=NOW() WHERE md5 = $5"
 	p, err := d.db.Exec(ctx, query, t.Name, t.Severity, t.Type, t.Description, t.MD5)

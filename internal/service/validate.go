@@ -1,5 +1,6 @@
 package service
 
+// validate проверяет корректность полей name, severity и type.
 func validate(name, severity, typeThreat string) bool {
 	if name == "" {
 		return false

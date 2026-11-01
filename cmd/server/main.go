@@ -42,6 +42,7 @@ func main() {
 	}
 }
 
+// newRouter настраивает маршрутизатор chi с middleware и хендлерами.
 func newRouter(h *handler.Handler, apiKey string) http.Handler {
 	r := chi.NewRouter()
 

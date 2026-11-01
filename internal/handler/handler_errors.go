@@ -7,6 +7,8 @@ import (
 	"github.com/gopher-95/threat-exchange-service/internal/threat"
 )
 
+// handleError преобразует доменные ошибки (из пакета threat) в соответствующие
+// HTTP-статусы и отправляет клиенту JSON-ответ с описанием ошибки.
 func handleError(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, threat.ErrNotFound):

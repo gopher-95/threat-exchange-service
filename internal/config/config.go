@@ -7,6 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Config содержит все настройки приложения, загружаемые из переменных окружения.ы
 type Config struct {
 	DBUser     string
 	DBPassword string
@@ -17,11 +18,8 @@ type Config struct {
 	ApiKey     string
 }
 
-func (c *Config) DatabaseURL() string {
-	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
-		c.DBUser, c.DBPassword, c.DBHost, c.DBPort, c.DBName)
-}
-
+// Load загружает конфигурацию из переменных окружения и валидирует её.
+// Возвращает ошибку, если обязательные переменные не заданы.
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 	pass := getEnv("DB_PASSWORD", "")
@@ -38,6 +36,12 @@ func Load() (*Config, error) {
 		HTTPPort:   getEnv("HTTP_PORT", "8080"),
 		ApiKey:     getEnv("API_KEY", ""),
 	}, nil
+}
+
+// DatabaseURL собирает строку подключения к PostgreSQL из отдельных полей конфигурации.
+func (c *Config) DatabaseURL() string {
+	return fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",
+		c.DBUser, c.DBPassword, c.DBHost, c.DBPort, c.DBName)
 }
 
 func getEnv(key, defaultvalue string) string {
