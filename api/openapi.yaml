@@ -171,17 +171,17 @@ components:
           type: string
           description: Название угрозы
           example: "Trojan.Win32.Generic"
-        severity:   # добавили
+        severity:   
           type: string
           description: Уровень опасности угрозы
           enum: [low, medium, high, critical]
           example: "high"
-        type:       # добавили
+        type:       
           type: string
           description: Тип угрозы
           enum: [trojan, worm, ransomware, adware, spyware, other]
           example: "trojan"
-        description: # добавили (не обязательное)
+        description: 
           type: string
           description: Подробное описание угрозы
           example: "Крадет пароли из браузера"
@@ -216,12 +216,12 @@ components:
           type: string
           format: date-time
           description: Дата и время создания записи
-          example: "2024-05-20T14:30:00Z"
+          example: "2026-10-31T14:30:00Z"
         updated_at:
           type: string
           format: date-time
           description: Дата и время последнего обновления
-          example: "2024-05-20T14:30:00Z"
+          example: "2026-10-31T14:30:00Z"
 
     ErrorResponse:
       type: object

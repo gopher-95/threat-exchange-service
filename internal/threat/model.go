@@ -1,13 +1,7 @@
 package threat
 
 import (
-	"errors"
 	"time"
-)
-
-var (
-	ErrNotFound = errors.New("угроза не найдена")
-	ErrConflict = errors.New("угроза уже была создана")
 )
 
 type Threat struct {

@@ -19,11 +19,6 @@ type Handler struct {
 	serv Service
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
-	Details string `json:"details"`
-}
-
 func NewHandler(serv Service) *Handler {
 	return &Handler{serv: serv}
 }
@@ -31,16 +26,48 @@ func NewHandler(serv Service) *Handler {
 func (h *Handler) GetInfoHandle(w http.ResponseWriter, r *http.Request) {
 	md5 := chi.URLParam(r, "md5")
 
-	ctx := r.Context()
-
-	_, err := h.serv.GetInfoService(ctx, md5)
+	t, err := h.serv.GetInfoService(r.Context(), md5)
 	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(ErrorResponse{
-			Message: "такой угрозы не найден",
-			Details: "нет угрозы с таким md5",
-		})
+		handleError(w, err)
+		return
 	}
+
+	writeJSON(w, http.StatusOK, t)
+}
+
+func (h *Handler) CreateInfoHandle(w http.ResponseWriter, r *http.Request) {
+	var req threat.ThreatCreateRequest
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeErrorJSON(w, 400, "Invalid JSON", err.Error())
+		return
+	}
+
+	t, err := h.serv.CreateInfoService(r.Context(), &req)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+
+	writeJSON(w, http.StatusCreated, t)
+}
+
+func (h *Handler) UpdateInfoHandle(w http.ResponseWriter, r *http.Request) {
+	var req threat.ThreatUpdateRequest
+
+	md5 := chi.URLParam(r, "md5")
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		writeErrorJSON(w, http.StatusBadRequest, "Invalid JSON", err.Error())
+		return
+	}
+
+	t, err := h.serv.UpdateInfoService(r.Context(), md5, &req)
+	if err != nil {
+		handleError(w, err)
+		return
+	}
+
+	writeJSON(w, http.StatusOK, t)
 
 }

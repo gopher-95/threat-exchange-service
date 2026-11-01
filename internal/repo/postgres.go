@@ -27,7 +27,7 @@ func (d *DB) GetInfo(ctx context.Context, md5 string) (*threat.Threat, error) {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, threat.ErrNotFound
 		}
-		return nil, fmt.Errorf("ошибка получения данных об угрозе: %w", err)
+		return nil, fmt.Errorf("failed to get threat info: %w", err)
 	}
 
 	return &t, nil
@@ -42,7 +42,7 @@ func (d *DB) CreateInfo(ctx context.Context, t threat.Threat) error {
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
 			return threat.ErrConflict
 		}
-		return fmt.Errorf("ошибка создания записи об угрозе: %w", err)
+		return fmt.Errorf("failed to create threat: %w", err)
 	}
 
 	return nil
@@ -52,7 +52,7 @@ func (d *DB) UpdateInfo(ctx context.Context, t threat.Threat) error {
 	query := "UPDATE threats SET name = $1, severity = $2, type = $3, description = $4, updated_at=NOW() WHERE md5 = $5"
 	p, err := d.db.Exec(ctx, query, t.Name, t.Severity, t.Type, t.Description, t.MD5)
 	if err != nil {
-		return fmt.Errorf("ошибка обновления записи: %w", err)
+		return fmt.Errorf("failed to update threat: %w", err)
 	}
 
 	if p.RowsAffected() == 0 {

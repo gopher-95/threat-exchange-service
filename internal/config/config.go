@@ -13,7 +13,7 @@ type Config struct {
 func Load() (*Config, error) {
 	dbUrl := os.Getenv("DATABASE_URL")
 	if dbUrl == "" {
-		return nil, errors.New("не указана строка подключения к бд")
+		return nil, errors.New("invalid connection string to database")
 	}
 
 	return &Config{

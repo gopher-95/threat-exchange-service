@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"regexp"
 
@@ -26,12 +27,16 @@ func NewService(storage Storage) *Service {
 
 func (s *Service) GetInfoService(ctx context.Context, md5 string) (*threat.Threat, error) {
 	if !validMD5(md5) {
-		return nil, fmt.Errorf("ошибка в md5 хэше")
+		return nil, threat.ErrInvalidMD5
 	}
 
 	t, err := s.storage.GetInfo(ctx, md5)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, threat.ErrNotFound) {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("get info: %w", err)
 	}
 
 	return t, nil
@@ -39,11 +44,11 @@ func (s *Service) GetInfoService(ctx context.Context, md5 string) (*threat.Threa
 
 func (s *Service) CreateInfoService(ctx context.Context, t *threat.ThreatCreateRequest) (*threat.Threat, error) {
 	if !validMD5(t.MD5) {
-		return nil, fmt.Errorf("ошибка в md5 хэше")
+		return nil, threat.ErrInvalidMD5
 	}
 
 	if !validate(t.Name, t.Severity, t.Type) {
-		return nil, fmt.Errorf("неправильно указаны поля")
+		return nil, threat.ErrInvalidFields
 	}
 
 	newThreat := threat.Threat{
@@ -63,11 +68,11 @@ func (s *Service) CreateInfoService(ctx context.Context, t *threat.ThreatCreateR
 
 func (s *Service) UpdateInfoService(ctx context.Context, md5 string, t *threat.ThreatUpdateRequest) (*threat.Threat, error) {
 	if !validMD5(md5) {
-		return nil, fmt.Errorf("ошибка в md5 хэше")
+		return nil, threat.ErrInvalidMD5
 	}
 
 	if !validate(t.Name, t.Severity, t.Type) {
-		return nil, fmt.Errorf("неправильно указаны поля")
+		return nil, threat.ErrInvalidFields
 	}
 
 	updatedThreat := threat.Threat{
