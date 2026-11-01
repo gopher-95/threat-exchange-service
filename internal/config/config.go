@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"os"
+
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -20,6 +22,7 @@ func (c *Config) DatabaseURL() string {
 }
 
 func Load() (*Config, error) {
+	_ = godotenv.Load()
 	pass := getEnv("DB_PASSWORD", "")
 	if pass == "" {
 		return nil, fmt.Errorf("empty password")
