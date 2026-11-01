@@ -14,6 +14,7 @@ type Config struct {
 	DBHost     string
 	DBPort     string
 	HTTPPort   string
+	ApiKey     string
 }
 
 func (c *Config) DatabaseURL() string {
@@ -35,6 +36,7 @@ func Load() (*Config, error) {
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
 		HTTPPort:   getEnv("HTTP_PORT", "8080"),
+		ApiKey:     getEnv("API_KEY", ""),
 	}, nil
 }
 
